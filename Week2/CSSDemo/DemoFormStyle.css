@@ -1,0 +1,11 @@
+* {
+    Font-Family: Verdana, Geneva, Tahoma, sans-serif;
+    margin: 0%
+}
+
+h1 {
+    color: darkblue;
+    font-size: 90px;
+    text-align: center;
+    margin-top: 20px;
+}
