@@ -15,7 +15,7 @@
           <input type="text" name="item" id="item">
 
           <!-- add an onclick to the button - createListItem(), explain how to do this in html -->
-          <button>Add item</button>
+          <button onclick = "createListItem()">Add item</button>
       </div>
 
       <ul id="Shopping-List"></ul>
@@ -30,12 +30,24 @@
       // 1. pull the most recent version from localStorage!
       // 2. Handle edge case... if it's null, set to empty array
       // 3. else - add each item to HTML by calling addItem() for every item in the shoppingList
+      let shoppingList = JSON.parse(localStorage.getItem("shoppingList"));
+      if (!shoppingList) {
+        shoppingList = [];
+      } else {
+        shoppingList.forEach(item => addItem(item));
+      }
       
       // Step 2 
       // Create createListItem() method - Handles overhead of adding items to list - Helper Method
       // 1. Select #item - document.querySelector("#item")
       // 2. Call addItem with input value 
       // 3. Clear the input box and set the focus back to the textbox
+      function createListItem() {
+        const input = document.querySelector("#item");
+        addItem(input.value);
+        input.value = "";
+        input.focus();
+      }
 
       //conveniently done for you!
       //manipulates HTML directly - grabs the list and pushes a new list item to it
@@ -64,13 +76,27 @@
         // 3. Remove it from localStorage by setting overriding the current shoppinglist in local storage with the updated one 
         // Explain the importance of immediately updating local storage - If we deleted something without updating local storage, when we refresh the page it would still be there 
         // Explain how we add an EventListener that triggers whenever the button is clicked
-        
+        deleteButton.addEventListener("click", () => {
+          list.removeChild(li);
+          shoppingList = shoppingList.filter(item => item !== span.innerText);
+          localStorage.setItem("shoppingList", JSON.stringify(shoppingList));
+        });
+
         // Make the save button functional - Explain that there are essentially three steps, it's pretty similar to delete functionality
         // 1. Add the item to our shoppinglist array 
         // 2. Update our local storage
         // 3. Update the UI - This is already handled for us
         // Ask them to think about any edge cases - explain that we have to check if item already exists, don't want to allow duplicates
         // Explain that console.log() is useful for checking the state of our program - local storage, arrays etc. 
+        saveButton.addEventListener("click", () => {
+          const itemExists = shoppingList.some((item) => item === text);
+          if(!itemExists) {
+            shoppingList.push(text);
+            localStorage.setItem("shoppingList", JSON.stringify(shoppingList));
+          } else {
+            console.log("Item already exists!");
+          }
+        });
       }
 
     </script>
