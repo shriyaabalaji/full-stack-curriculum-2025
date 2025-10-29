@@ -18,7 +18,7 @@
 
 <script>
 		// Step 1: Add OpenWeather API key
-		const apiKey = "";
+		const apiKey = "e2eb4b09cd12351eb9c97a0a0d3154db";
 
 		// Step 2: Variables to store temperature, latitude, and longitude. Think about why they are declared outside of functions.
 		let temp;
@@ -26,30 +26,38 @@
 		let lon;
 
 		// Step 3: Fetches location and temperature data on button click
-		function getData() {
+		async function getData() {
 			// Step 4: Built API url to fetch coordinates for location
-			let apiCall = ``;
+			let apiCall = `http://api.openweathermap.org/geo/1.0/direct?q=Austin,TX,US&appid=${apiKey}`;
+			let locationResponse = await fetch(apiCall);
 
 			// Step 5: Make an API request to get coordinates
 			// Then extract latitude and longitude from the response
+			const locationData = await locationResponse.json();
+			lon = locationData[0].lon;
+			lat = locationData[0].lat;
 
 			// Step 6: Show lat/lon on the page
+			renderLatLon();
 
 			// Step 7: After getting coordinates, fetch the temperature data
+			let WeatherApiCall = `http://api.openweathermap.org/data/2.5/forecast?lat=${lat}&lon=${lon}&appid=${apiKey}`;
+			let weatherResponse = await fetch(WeatherApiCall);
+			let weatherData = await weatherResponse.json();
+
+			temp = weatherData.list[0].main.temp;
+			renderTemp();
 		}
 
 		// Step 8: Display latitude and longtitude on the page
 		function renderLatLon() {
-		}
-
-		// Step 9: Build API url using lat/lon to fetch temperature for that location
-		function getTemp() {
-			
+			document.querySelector("#lat").innerText = `Lat: ${lat}`;
+			document.querySelector("#lon").innerText = `Lon: ${lon}`;
 		}
 
         // Step 10: Display the fetched temperature on the page
 		function renderTemp() {
-		
+			document.querySelector("#temp").innerText = `Temp: ${temp}`;
 		}
 	</script>
 </html>
