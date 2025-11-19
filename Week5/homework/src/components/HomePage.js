@@ -33,13 +33,14 @@ export default function HomePage() {
     if (!currentUser) {
       navigate(`/login`)
     } else {
-      fetch(`https://tpeo-todo.vercel.app/tasks/${currentUser}`)
+      fetch(`http://localhost:3001/tasks/${currentUser}`)
         .then((response) => response.json())
         .then((data) => {
-          setTaskList(data)
+          setTaskList(Array.isArray(data) ? data : [])
         })
         .catch(error => {
           console.error("FAILED TO FETCH: ", error)
+          setTaskList([]) // Set to empty array on error
         })
     }
   }, [currentUser])
@@ -52,7 +53,7 @@ export default function HomePage() {
       // In addition to updating the state directly, you should send a request
       // to the API to add a new task and then update the state based on the response.
 
-      fetch(`https://tpeo-todo.vercel.app/tasks/`, {
+      fetch(`http://localhost:3001/tasks/`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json"
@@ -84,7 +85,7 @@ export default function HomePage() {
     // Similar to adding tasks, when checking off a task, you should send a request
     // to the API to update the task's status and then update the state based on the response.
 
-    fetch(`https://tpeo-todo.vercel.app/tasks/${task.id}`, {
+    fetch(`http://localhost:3001/tasks/${task.id}`, {
       method: "DELETE"
     })
     .then(response => response.json())

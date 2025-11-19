@@ -42,13 +42,57 @@ app.get("/tasks", async (req, res) => {
 });
 
 // GET: Endpoint to retrieve all tasks for a user
-// ... 
+app.get("/tasks/:user", async (req, res) => {
+  try {
+    const { user } = req.params;
+    const snapshot = await db.collection("tasks").where("user", "==", user).get();
+    
+    let tasks = [];
+
+    // Looping through each document and collecting data
+    snapshot.forEach((doc) => {
+      tasks.push({
+        id: doc.id,  // Document ID from Firestore
+        ...doc.data(),  // Document data
+      });
+    });
+    
+    // Always return an array, even if empty
+    res.status(200).send(tasks);
+  } catch (error) {
+    // Sending an error response in case of an exception
+    res.status(500).send(error.message);
+  }
+});
 
 // POST: Endpoint to add a new task
-// ...
+app.post('/tasks', async (req, res) => {
+    const data = {
+        user: req.body.user,
+        name: req.body.name,
+        finished: false
+    };
+    const addedTask = await db.collection("tasks").add(data);
+    res.status(201).send({
+      id: addedTask.id,  // Automatically generated Document ID from Firestore
+      ...data,
+    });
+});
+
 
 // DELETE: Endpoint to remove a task
-// ...
+app.delete('/tasks/:id', async (req, res) => {
+    const { id } = req.params;
+    const taskRef = db.collection("tasks").doc(id);
+    const snapshot = await taskRef.get();
+
+    if (!snapshot.exists) {
+        res.status(404).json({ error: "Task not found" });
+    } else {
+        await taskRef.delete();
+        res.json({ id, ...snapshot.data() });
+    }
+});
 
 // Setting the port for the server to listen on
 const PORT = process.env.PORT || 3001;
