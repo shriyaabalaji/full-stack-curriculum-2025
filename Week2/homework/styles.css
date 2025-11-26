@@ -1,0 +1,28 @@
+html {
+    font-family: "Segoe UI", "Inter", system-ui, sans-serif;
+}
+
+.header {
+    display: flex;
+    align-items: center;
+    gap: 20px;
+}
+
+img {
+    border-radius: 50%;
+    object-fit: cover;
+}
+
+h2 {
+    background-color: #f3f4f6;
+    padding: 30px 15px 2px;
+    margin: 25px 0 0;
+}
+
+h2 + ul {
+    list-style: none; 
+    background-color: #f3f4f6;
+    padding: 15px;
+    margin: 0 0 4px;
+    line-height: 2;
+}
