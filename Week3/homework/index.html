@@ -23,7 +23,7 @@
 
 <script>
 		// USE YOUR OWN API KEY
-		const apiKey = "";
+		const apiKey = "6dc87f0d902ad7e89bffc74e3ba537ef";
 
         // variable that stores the city that is chosen
 		let city;
@@ -86,6 +86,50 @@
 			})	
 		}
 
+		function renderWeather(currentWeather, forecast) {
+			console.log(currentWeather);
+			const weatherContainer = document.querySelector('#weather-container');
+			weatherContainer.innerHTML = '';
+			
+			const today = formatDate(0);
+
+			const currentWeatherCard = document.createElement('div');
+			currentWeatherCard.className = 'current-weather';
+			currentWeatherCard.innerHTML = `
+				<div class='date-location'>
+					<div class='date'>${today}</div>
+					<div class='location'>Weather for ${city.fullName}</div>
+				</div>
+				<div class="current-weather-show">
+					<div class="current-weather-details">
+						<div class='condition'>${currentWeather.weather[0].main.toLowerCase()}</div>
+						<div class='temp'>${Math.round(currentWeather.main.temp)}°</div>
+						<div class="aqi">AQI: ${aqi}</div>
+					</div>
+					<div class="current-weather-icon">
+						<img src="icons/${currentWeather.weather[0].icon}.svg" alt="${currentWeather.weather[0].description}">
+					</div>
+				</div>
+			`;
+			weatherContainer.appendChild(currentWeatherCard);
+
+			const forecastContainer = document.createElement('div');
+			forecastContainer.className = 'forecast';
+			forecast.forEach(day => {
+				const forecastCard = document.createElement('div');
+				forecastCard.className = 'forecast-card';
+				forecastCard.innerHTML = `
+					<div class='forecast-date'>${day.day}</div>
+					<div class='forecast-icon'>
+						<img src="icons/${day.icon}.svg" alt="${day.description}">
+					</div>
+					<div class='forecast-temp'>${Math.round(day.high)}° to ${Math.round(day.low)}°</div>
+				`;
+				forecastContainer.appendChild(forecastCard);
+			});
+			weatherContainer.appendChild(forecastContainer);
+		}
+
 		// function that is called whenever a city has been selected
 		// HINT: think about what should be rendering on the screen whenever a city is selected and what information is needed to make that happen 
 		function selectCity(fullName, name, state, lat, lon) {
@@ -103,6 +147,50 @@
 			//printing the city object to the console
 			console.log(city);
             // BEGIN CODING HERE
+			let apiCall1 = `https://api.openweathermap.org/data/2.5/weather?lat=${city.lat}&lon=${city.lon}&units=imperial&appid=${apiKey}`;
+			const currentWeatherPromise =fetch(apiCall1)
+				.then((response) => response.json())
+				.then((data) => {
+					return data;
+				})
+			let apiCall2 = `https://api.openweathermap.org/data/2.5/forecast?lat=${city.lat}&lon=${city.lon}&units=imperial&appid=${apiKey}`;
+			const forecastPromise = fetch(apiCall2)
+				.then((response) => response.json())
+				.then((data) => {
+					const dailyTemps = {};
+					data.list.forEach(item => {
+						const date = new Date(item.dt * 1000);
+						const dayStr = date.toLocaleDateString('en-US', { weekday: 'long' }).toUpperCase() + " " + date.getDate();
+						if (!dailyTemps[dayStr]) {
+							dailyTemps[dayStr] = {
+								day: dayStr,
+								high: item.main.temp_max,
+								low: item.main.temp_min,
+								icon: item.weather[0].icon,
+							};
+						} else {
+							if (item.main.temp_max > dailyTemps[dayStr].high) {
+								dailyTemps[dayStr].high = item.main.temp_max;
+							}
+							if (item.main.temp_min < dailyTemps[dayStr].low) {
+								dailyTemps[dayStr].low = item.main.temp_min;
+							}
+						}
+					});
+
+					return Object.values(dailyTemps).slice(1, 6);
+				});
+
+			let apiCall3 = `http://api.openweathermap.org/data/2.5/air_pollution?lat=${city.lat}&lon=${city.lon}&appid=${apiKey}`;
+			const airPollutionPromise = fetch(apiCall3)
+				.then((response) => response.json())
+				.then((data) => {
+					aqi = data.list[0].main.aqi;
+				});
+
+			Promise.all([currentWeatherPromise, forecastPromise]).then(([currentWeather, forecast]) => {
+				renderWeather(currentWeather, forecast);
+			});
 		}
 	</script>
 </html>
