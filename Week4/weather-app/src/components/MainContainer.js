@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from "react";
 import "../styles/MainContainer.css"; // Import the CSS file for MainContainer
+import WeatherCard from "./WeatherCard";
 
 function MainContainer(props) {
 
@@ -124,19 +125,20 @@ function MainContainer(props) {
         <div className='forecast'>
           {weather.forecast.map((day, index) => {
             return (
-            <div className='forecast-card' key={index}>
-              <div className='forecast-date'>{day.day}</div>
-					    <div className='forecast-icon'>
-						    <img src={`icons/${day.icon}.svg`} alt={day.description} />
-					    </div>
-					    <div className='forecast-temp'>{Math.round(day.high)}° to {Math.round(day.low)}°</div>
-            </div>
+              <WeatherCard 
+                key={index}
+                day={day.day}
+                icon={day.icon}
+                high={day.high}
+                low={day.low}
+                description={day.description}
+              />
             );
           })}
         </div>
         </>
       ) : (
-        <div>Select a city to get started</div>
+        <div className="select-city-message">Select a city to get started !!</div>
       )}
       </div>
     </div>

@@ -2,6 +2,7 @@
 const express = require("express");
 const bodyParser = require("body-parser");
 const cors = require("cors");
+const admin = require("firebase-admin")
 
 // Creating an instance of Express
 const app = express();
@@ -12,9 +13,25 @@ require("dotenv").config();
 // Importing the Firestore database instance from firebase.js
 const db = require("./firebase");
 
+
 // Middlewares to handle cross-origin requests and to parse the body of incoming requests to JSON
 app.use(cors());
 app.use(bodyParser.json());
+
+// Firebase Admin Authentication Middleware
+const auth = (req, res, next) => {
+  try {
+    const tokenId = req.get("Authorization").split("Bearer ")[1];
+    admin.auth().verifyIdToken(tokenId)
+      .then((decoded) => {
+        req.token = decoded;
+        next();
+      })
+      .catch((error) => res.status(401).send(error));
+  } catch (error) {
+    res.status(400).send("Invalid token");
+  }
+};
 
 // Your API routes will go here...
 
@@ -66,9 +83,9 @@ app.get("/tasks/:user", async (req, res) => {
 });
 
 // POST: Endpoint to add a new task
-app.post('/tasks', async (req, res) => {
+app.post('/tasks', auth, async (req, res) => {
     const data = {
-        user: req.body.user,
+        user: req.token.uid,
         name: req.body.name,
         finished: false
     };

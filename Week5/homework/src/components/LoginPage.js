@@ -15,7 +15,7 @@ function LoginPage() {
   const theme = useTheme();
 
   // TODO: Extract login function and error from our authentication context.
-  const { login, loginError } = useAuth()
+  const { login, register,loginError } = useAuth()
 
   // State to hold the username and password entered by the user.
   const [username, setUsername] = useState("");
@@ -24,6 +24,10 @@ function LoginPage() {
   // TODO: Handle login function.
   const handleLogin = () => {
     login(username, password)
+  };
+
+  const handleRegister = () => {
+    register(username, password)
   };
 
   return (
@@ -85,6 +89,16 @@ function LoginPage() {
             onClick={handleLogin}
           >
             Login
+          </Button>
+          <Button
+            type="submit"
+            fullWidth
+            variant="contained"
+            color="primary"
+            sx={{ mt: 3, mb: 2 }}
+            onClick={handleRegister}
+          >
+            Register
           </Button>
         </Box>
         {/* TODO: Display Login Error if it exists */}

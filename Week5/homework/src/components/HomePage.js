@@ -33,15 +33,21 @@ export default function HomePage() {
     if (!currentUser) {
       navigate(`/login`)
     } else {
-      fetch(`http://localhost:3001/tasks/${currentUser}`)
-        .then((response) => response.json())
-        .then((data) => {
-          setTaskList(Array.isArray(data) ? data : [])
+      currentUser.getIdToken().then((accessToken) => {
+        fetch(`http://localhost:3001/tasks/${currentUser.uid}`, {
+          headers: {
+            Authorization: `Bearer ${accessToken}`
+          }
         })
-        .catch(error => {
-          console.error("FAILED TO FETCH: ", error)
-          setTaskList([]) // Set to empty array on error
-        })
+          .then((response) => response.json())
+          .then((data) => {
+            setTaskList(Array.isArray(data) ? data : [])
+          })
+          .catch(error => {
+            console.error("FAILED TO FETCH: ", error)
+            setTaskList([]) // Set to empty array on error
+          })
+      })
     }
   }, [currentUser])
 
@@ -53,13 +59,15 @@ export default function HomePage() {
       // In addition to updating the state directly, you should send a request
       // to the API to add a new task and then update the state based on the response.
 
-      fetch(`http://localhost:3001/tasks/`, {
+      currentUser.getIdToken().then((accessToken) => {
+        fetch(`http://localhost:3001/tasks/`, {
         method: "POST",
         headers: {
-          "Content-Type": "application/json"
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${accessToken}`
         },
         body: JSON.stringify({
-          user: currentUser,
+          user: currentUser.uid,
           name: newTaskName,
           finished: false
         })
@@ -72,6 +80,7 @@ export default function HomePage() {
       .catch(error => {
         console.error("FAILED TO POST: ", error)
       })
+    })
 
     } else if (taskList.some((task) => task.name === newTaskName)) {
       alert("Task already exists!");
@@ -85,7 +94,11 @@ export default function HomePage() {
     // Similar to adding tasks, when checking off a task, you should send a request
     // to the API to update the task's status and then update the state based on the response.
 
+    currentUser.getIdToken().then((accessToken) => {
     fetch(`http://localhost:3001/tasks/${task.id}`, {
+      headers: {
+        Authorization: `Bearer ${accessToken}`
+      },
       method: "DELETE"
     })
     .then(response => response.json())
@@ -95,6 +108,7 @@ export default function HomePage() {
     })
     .catch(error => {
       console.error("FAILED TO DELETE: ", error)
+    })
     })
   }
 

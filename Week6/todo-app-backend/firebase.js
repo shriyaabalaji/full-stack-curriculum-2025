@@ -17,7 +17,7 @@ const creds = JSON.parse(process.env.FIREBASE_CREDENTIALS);
 
 // Initializing Firebase Admin SDK with credentials and database URL
 admin.initializeApp({
-  credential: admin.credential.cert(creds),
+  credential: admin.credential.cert(creds)
 });
 
 const db = admin.firestore();

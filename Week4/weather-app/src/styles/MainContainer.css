@@ -77,3 +77,12 @@
 .forecast-temp {
   font-size: 25px;
 }
+
+.select-city-message {
+  font-size: 40px;
+  font-weight: bold;
+  text-align: center;
+  padding-top: 250px;
+  color: white;
+  text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
+}
