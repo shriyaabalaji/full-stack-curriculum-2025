@@ -34,7 +34,7 @@ export default function HomePage() {
       navigate(`/login`)
     } else {
       currentUser.getIdToken().then((accessToken) => {
-        fetch(`http://localhost:3001/tasks/${currentUser.uid}`, {
+        fetch(`${process.env.REACT_APP_BACKEND}/tasks/${currentUser.uid}`, {
           headers: {
             Authorization: `Bearer ${accessToken}`
           }
@@ -60,7 +60,7 @@ export default function HomePage() {
       // to the API to add a new task and then update the state based on the response.
 
       currentUser.getIdToken().then((accessToken) => {
-        fetch(`http://localhost:3001/tasks/`, {
+        fetch(`${process.env.REACT_APP_BACKEND}/tasks/`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -95,7 +95,7 @@ export default function HomePage() {
     // to the API to update the task's status and then update the state based on the response.
 
     currentUser.getIdToken().then((accessToken) => {
-    fetch(`http://localhost:3001/tasks/${task.id}`, {
+    fetch(`${process.env.REACT_APP_BACKEND}/tasks/${task.id}`, {
       headers: {
         Authorization: `Bearer ${accessToken}`
       },

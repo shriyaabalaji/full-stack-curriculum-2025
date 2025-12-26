@@ -53,6 +53,9 @@ function LoginPage() {
         <Typography component="h1" variant="h4" fontWeight="bold">
           Login
         </Typography>
+        <Typography variant="body2" color="text.secondary" sx={{ mb: 2 }}>
+          Click register if you don't have a login
+        </Typography>
         <Box sx={{ mt: 1 }}>
           <TextField
             variant="outlined"
@@ -62,7 +65,7 @@ function LoginPage() {
             id="username"
             label="Username"
             InputLabelProps={{ shrink: true }}
-            placeholder="admin"
+            placeholder="admin@example.com"
             autoFocus
             value={username}
             onChange={(e) => setUsername(e.target.value)}
@@ -76,7 +79,7 @@ function LoginPage() {
             type="password"
             id="password"
             InputLabelProps={{ shrink: true }}
-            placeholder="racecar"
+            placeholder="password"
             value={password}
             onChange={(e) => setPassword(e.target.value)}
           />

@@ -43,9 +43,11 @@ export function AuthProvider({ children }) {
 
     // Sign in existing users
     const login = (email, password) => {
+        setLoginError(null);
         signInWithEmailAndPassword(auth, email, password)
           .then((userCredential) => {
             setCurrentUser(userCredential.user);
+            setLoginError(null);
             // this method of retrieving access token also works
             console.log(userCredential.user.accessToken)
             navigate("/");
@@ -57,9 +59,11 @@ export function AuthProvider({ children }) {
 
     // Sign up new users
     const register = (email, password) => {
+        setLoginError(null);
         createUserWithEmailAndPassword(auth, email, password)
           .then((userCredential) => {
             setCurrentUser(userCredential.user);
+            setLoginError(null);
             // correct and formal way of getting access token
             userCredential.user.getIdToken().then((accessToken) => {
                 console.log(accessToken)
