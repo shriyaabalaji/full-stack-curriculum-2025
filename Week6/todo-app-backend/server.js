@@ -35,6 +35,22 @@ const auth = (req, res, next) => {
 
 // Your API routes will go here...
 
+app.get("/", async (req, res) => {
+  try {
+    const collections = await db.listCollections();
+    res.status(200).send({
+      message: "Todo API is running!",
+      database: "Connected",
+      collections: collections.map(col => col.id)
+    });
+  } catch (error) {
+    res.status(500).send({
+      message: "API running but database error",
+      error: error.message
+    });
+  }
+});
+
 // GET: Endpoint to retrieve all tasks
 app.get("/tasks", async (req, res) => {
   try {
@@ -113,13 +129,7 @@ app.delete('/tasks/:id', async (req, res) => {
 
 // Setting the port for the server to listen on
 const PORT = process.env.PORT || 3001;
-
-// For local development
-if (require.main === module) {
-  app.listen(PORT, () => {
-    console.log(`Server started on port ${PORT}`);
-  });
-}
-
-// Export for Vercel serverless functions
-module.exports = app;
+// Starting the server
+app.listen(PORT, () => {
+  console.log(`Server started on port ${PORT}`);
+});
