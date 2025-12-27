@@ -36,19 +36,10 @@ const auth = (req, res, next) => {
 // Your API routes will go here...
 
 app.get("/", async (req, res) => {
-  try {
-    const collections = await db.listCollections();
-    res.status(200).send({
-      message: "Todo API is running!",
-      database: "Connected",
-      collections: collections.map(col => col.id)
-    });
-  } catch (error) {
-    res.status(500).send({
-      message: "API running but database error",
-      error: error.message
-    });
-  }
+  res.status(200).json({
+    message: "Todo API is running successfully!",
+    status: "ok"
+  });
 });
 
 // GET: Endpoint to retrieve all tasks
